@@ -1,14 +1,34 @@
 import plotly.graph_objects as go
 import streamlit as st
 
-st.set_page_config(page_title="Layout Skladu", layout="wide")
-st.title("📦 Layout Skladu")
+# Nastavenie aplikácie
+st.set_page_config(
+    page_title="WMS Layout Skladu", layout="wide", initial_sidebar_state="collapsed"
+)
 
-# Jednotná farba pre všetky stanice
-STATION_COLOR = "#2b3e6b"  # Jednotná modrá farba staníc
-INFRA_COLOR = "#475569"  # Farba pre doplňujúce prvky (schody/výťahy)
+# Custom CSS pre temný moderný vzhľad stránky
+st.markdown(
+    """
+    <style>
+        .stApp {
+            background-color: #0b0f19;
+        }
+        h1 {
+            color: #f8fafc;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+        }
+    </style>
+""",
+    unsafe_allow_html=True,
+)
 
-# Zoznam staníc a ich pozícií
+st.title("🏭 Layout Skladu – SKLC3")
+
+# -----------------------------------------------------------------------------
+# 1. ZOZNAM STANÍC
+# -----------------------------------------------------------------------------
 stations = [
     # Horný rad
     {"id": "S16", "x0": 11, "y0": 38, "x1": 27, "y1": 48},
@@ -46,78 +66,166 @@ stations = [
     {"id": "S30", "x0": 82, "y0": 11, "x1": 98, "y1": 24},
 ]
 
-# Doplnky (Výťahy, Schody, Predák)
+# Prvky infraštruktúry
 infra = [
-    {"name": "Výťah", "x0": 9, "y0": 28, "x1": 12, "y1": 31},
-    {"name": "Výťah", "x0": 91, "y0": 22, "x1": 93, "y1": 24},
-    {"name": "Výťah", "x0": 92, "y0": 45, "x1": 94, "y1": 48},
-    {"name": "Schody", "x0": 15, "y0": 13, "x1": 17, "y1": 16},
-    {"name": "Schody", "x0": 15, "y0": 42, "x1": 17, "y1": 44},
-    {"name": "Schody", "x0": 60, "y0": 44, "x1": 63, "y1": 46},
-    {"name": "Schody", "x0": 58, "y0": 18, "x1": 60, "y1": 21},
-    {"name": "Schody", "x0": 91, "y0": 15, "x1": 93, "y1": 18},
-    {"name": "Schody", "x0": 95, "y0": 45, "x1": 97, "y1": 48},
-    {"name": "Predák", "x0": 49, "y0": 25, "x1": 52, "y1": 26},
-    {"name": "Predák", "x0": 76, "y0": 12, "x1": 79, "y1": 13},
+    # Výťahy (Modré)
+    {
+        "name": "VÝŤAH",
+        "x0": 9,
+        "y0": 28,
+        "x1": 12,
+        "y1": 31,
+        "color": "#0284c7",
+    },
+    {
+        "name": "VÝŤAH",
+        "x0": 91,
+        "y0": 22,
+        "x1": 93,
+        "y1": 24,
+        "color": "#0284c7",
+    },
+    {
+        "name": "VÝŤAH",
+        "x0": 92,
+        "y0": 45,
+        "x1": 94,
+        "y1": 48,
+        "color": "#0284c7",
+    },
+    # Schody (Červené)
+    {
+        "name": "SCHODY",
+        "x0": 15,
+        "y0": 13,
+        "x1": 17,
+        "y1": 16,
+        "color": "#e11d48",
+    },
+    {
+        "name": "SCHODY",
+        "x0": 15,
+        "y0": 42,
+        "x1": 17,
+        "y1": 44,
+        "color": "#e11d48",
+    },
+    {
+        "name": "SCHODY",
+        "x0": 60,
+        "y0": 44,
+        "x1": 63,
+        "y1": 46,
+        "color": "#e11d48",
+    },
+    {
+        "name": "SCHODY",
+        "x0": 58,
+        "y0": 18,
+        "x1": 60,
+        "y1": 21,
+        "color": "#e11d48",
+    },
+    {
+        "name": "SCHODY",
+        "x0": 91,
+        "y0": 15,
+        "x1": 93,
+        "y1": 18,
+        "color": "#e11d48",
+    },
+    {
+        "name": "SCHODY",
+        "x0": 95,
+        "y0": 45,
+        "x1": 97,
+        "y1": 48,
+        "color": "#e11d48",
+    },
+    # Predáci (Žlté)
+    {
+        "name": "PREDÁK",
+        "x0": 49,
+        "y0": 25,
+        "x1": 52,
+        "y1": 26,
+        "color": "#ca8a04",
+    },
+    {
+        "name": "PREDÁK",
+        "x0": 76,
+        "y0": 12,
+        "x1": 79,
+        "y1": 13,
+        "color": "#ca8a04",
+    },
 ]
 
 fig = go.Figure()
 
-# 1. Vykreslenie všetkých STANÍC (Jednotná farba)
+# -----------------------------------------------------------------------------
+# 2. VYKRESLENIE STANÍC + TEXTOV (LAYER = BELOW zaručuje, že text bude Navrchu)
+# -----------------------------------------------------------------------------
 for s in stations:
+    cx = (s["x0"] + s["x1"]) / 2
+    cy = (s["y0"] + s["y1"]) / 2
+
+    # Obdĺžnik stanice
     fig.add_shape(
         type="rect",
         x0=s["x0"],
         y0=s["y0"],
         x1=s["x1"],
         y1=s["y1"],
-        fillcolor=STATION_COLOR,
-        line=dict(color="#ffffff", width=1.5),
+        fillcolor="#1e293b",
+        line=dict(color="#3b82f6", width=2),
+        layer="below",  # Dôležité: Tvar je POD textom
     )
 
-    # Názov stanice presne do stredu štvorca
-    cx = (s["x0"] + s["x1"]) / 2
-    cy = (s["y0"] + s["y1"]) / 2
-
-    fig.add_trace(
-        go.Scatter(
-            x=[cx],
-            y=[cy],
-            text=[f"<b>{s['id']}</b>"],
-            mode="text",
-            textfont=dict(color="white", size=14),
-            hoverinfo="none",
-            showlegend=False,
+    # Nápis v strede štvorca (vynútené Plotly Anotáciou)
+    if not (s["id"] == "S12" and cy < 18):  # Duplicitný nápis pre S12 vynecháme
+        fig.add_annotation(
+            x=cx,
+            y=cy,
+            text=f"<b>{s['id']}</b>",
+            showarrow=False,
+            font=dict(color="#ffffff", size=15, family="Consolas, monospace"),
+            align="center",
         )
-    )
 
-# 2. Vykreslenie doplnkov (Schody / Výťahy / Predák)
+# -----------------------------------------------------------------------------
+# 3. VYKRESLENIE INFRAŠTRUKTÚRY
+# -----------------------------------------------------------------------------
 for item in infra:
+    cx = (item["x0"] + item["x1"]) / 2
+    cy = (item["y0"] + item["y1"]) / 2
+
     fig.add_shape(
         type="rect",
         x0=item["x0"],
         y0=item["y0"],
         x1=item["x1"],
         y1=item["y1"],
-        fillcolor=INFRA_COLOR,
+        fillcolor=item["color"],
         line=dict(color="#ffffff", width=1),
-    )
-    cx = (item["x0"] + item["x1"]) / 2
-    cy = (item["y0"] + item["y1"]) / 2
-
-    fig.add_trace(
-        go.Scatter(
-            x=[cx],
-            y=[cy],
-            text=[item["name"]],
-            mode="text",
-            textfont=dict(color="white", size=8),
-            hoverinfo="none",
-            showlegend=False,
-        )
+        layer="below",
     )
 
-# 3. Ulička / Dopravník
+    # Nápisy pre výťahy/schody
+    fig.add_annotation(
+        x=cx,
+        y=cy,
+        text=f"<b>{item['name']}</b>",
+        showarrow=False,
+        font=dict(
+            color="#ffffff", size=8, family="Segoe UI, sans-serif"
+        ),
+        align="center",
+    )
+
+# -----------------------------------------------------------------------------
+# 4. TRASA / DOPRAVNÍK (Svietivá azúrová čiara)
+# -----------------------------------------------------------------------------
 conveyor_x = [18, 18, 20, 80, 80, 80, 90, 90, 80, 80, 20, 20, 18]
 conveyor_y = [24, 36, 36, 36, 36, 13, 13, 11, 11, 13, 13, 24, 24]
 
@@ -126,23 +234,35 @@ fig.add_trace(
         x=conveyor_x,
         y=conveyor_y,
         mode="lines",
-        line=dict(color="#64748b", width=4),
+        line=dict(color="#06b6d4", width=3.5),
         hoverinfo="skip",
         showlegend=False,
     )
 )
 
-# 4. Čistý vzhľad (Tmavšie pozadie pre lepšiu čitateľnosť)
+# -----------------------------------------------------------------------------
+# 5. DIZAJN MAPY (CAD Blueprint grid)
+# -----------------------------------------------------------------------------
 fig.update_layout(
-    plot_bgcolor="#0f172a",
-    paper_bgcolor="#0f172a",
+    plot_bgcolor="#0b0f19",
+    paper_bgcolor="#0b0f19",
     xaxis=dict(
-        showgrid=False, zeroline=False, showticklabels=False, range=[0, 102]
+        showgrid=True,
+        gridcolor="#1e293b",
+        gridwidth=1,
+        zeroline=False,
+        showticklabels=False,
+        range=[0, 102],
     ),
     yaxis=dict(
-        showgrid=False, zeroline=False, showticklabels=False, range=[0, 52]
+        showgrid=True,
+        gridcolor="#1e293b",
+        gridwidth=1,
+        zeroline=False,
+        showticklabels=False,
+        range=[0, 52],
     ),
-    height=680,
+    height=720,
     margin=dict(l=10, r=10, t=10, b=10),
 )
 
