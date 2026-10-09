@@ -47,3 +47,32 @@ only read when regenerating the data, never during an ordinary app rerun.
 Everything else keeps the workbook labels. No missing locations are invented:
 4C-14, 4C-15, and 4H-08 are absent from XPO. The old manually drawn map is
 replaced by the workbook renderer.
+
+## Warehouse map and Excel debug
+
+The default **Mapa** mode uses `map_objects.py` to normalize spreadsheet geometry
+into warehouse zones, stations, racks, conveyor routes and infrastructure. Touching
+same-color areas become semantic components; tiny unlabeled components, black
+markers, numeric helper labels and direction-arrow artifacts are omitted. Large
+background fills and cell borders are not copied into the map. `map_renderer.py`
+uses muted source colors, consistent layer borders and rounded object corners.
+Paths composed of multiple source strips have no internal outlines. XPO rack rows
+are overview groups (4A, 4B, etc.); their original locations remain in normalized
+data and are drawn individually when found through search. Dense rack details are
+not invented or interpolated.
+
+Large labels are horizontal. Labels that cannot fit are hidden or shortened, with
+full text available by hovering near an object's center. Infrastructure has distinct
+labels and stairs/elevator symbols. The sidebar selects a floor and mode, searches
+locations (case/accent insensitive), and lists matches. An exact match is preferred;
+selecting a result outlines and zooms to it, including in Excel debug mode.
+
+**Excel debug** retains the detailed workbook renderer, including source borders,
+rotations and optional numeric helper values. Source data and `data/overrides.json`
+remain unchanged by the map simplification.
+
+Both views enable wheel zoom, drag pan, Plotly's visible toolbar and equal X/Y
+scaling. `uirevision` preserves the view on unrelated reruns; floor, mode, selection,
+fit setting or reset changes establish a new view. **Reset view** restores the whole
+floor without removing the search text. **Fit to screen** uses the compact viewport;
+disabling it provides a taller canvas. Every floor starts with its own full extent.
