@@ -1,0 +1,26 @@
+{
+  "hide_unmerged_values": ["1"],
+  "sheets": {
+    "2NP (3. BPO)": {
+      "text_replacements": {
+        "FC89": "BPO20", "GD89": "BPO21", "HK89": "BPO22",
+        "II89": "BPO23", "JN89": "BPO24", "KE89": "BPO25",
+        "LK89": "BPO26", "LY89": "BPO27", "NK89": "BPO28",
+        "FE140": "BPO30", "GC140": "BPO31", "HH140": "BPO32",
+        "IG140": "BPO33", "JK140": "BPO34", "KJ140": "BPO35",
+        "LM140": "BPO36", "ML140": "BPO37", "NM140": "BPO38"
+      },
+      "vertical_station_pairs": [
+        {"label_cell": "EY114", "range": "EY98:FZ137", "labels": ["BPO01", "BPO02"]},
+        {"label_cell": "GF114", "range": "GF96:HB134", "labels": ["BPO03", "BPO04"]},
+        {"label_cell": "HH114", "range": "HH98:ID136", "labels": ["BPO05", "BPO06"]},
+        {"label_cell": "IJ114", "range": "IJ96:JE134", "labels": ["BPO07", "BPO08"]},
+        {"label_cell": "JK114", "range": "JK98:KG136", "labels": ["BPO09", "BPO10"]},
+        {"label_cell": "KM114", "range": "KM96:LG134", "labels": ["BPO11", "BPO12"]},
+        {"label_cell": "LL114", "range": "LL98:MJ136", "labels": ["BPO13", "BPO14"]},
+        {"label_cell": "MO114", "range": "MO96:NG135", "labels": ["BPO15", "BPO16"]},
+        {"label_cell": "NM114", "range": "NM96:OJ136", "labels": ["BPO17", "BPO18"]}
+      ]
+    }
+  }
+}
