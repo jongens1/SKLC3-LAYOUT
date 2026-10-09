@@ -26,6 +26,8 @@ st.markdown(
 
 st.title("🏭 Layout Skladu – SKLC3")
 
+floor = st.radio("Poschodie", ["Pôvodné poschodie", "3. poschodie"], horizontal=True)
+
 # -----------------------------------------------------------------------------
 # 1. ZOZNAM STANÍC
 # -----------------------------------------------------------------------------
@@ -161,6 +163,11 @@ infra = [
     },
 ]
 
+if floor == "3. poschodie":
+    from floor3 import floor_layout
+
+    stations, infra, conveyor_x, conveyor_y = floor_layout()
+
 fig = go.Figure()
 
 # -----------------------------------------------------------------------------
@@ -189,7 +196,11 @@ for s in stations:
             y=cy,
             text=f"<b>{s['id']}</b>",
             showarrow=False,
-            font=dict(color="#ffffff", size=15, family="Consolas, monospace"),
+            font=dict(
+                color="#ffffff",
+                size=11 if floor == "3. poschodie" else 15,
+                family="Consolas, monospace",
+            ),
             align="center",
         )
 
@@ -226,8 +237,9 @@ for item in infra:
 # -----------------------------------------------------------------------------
 # 4. TRASA / DOPRAVNÍK (Svietivá azúrová čiara)
 # -----------------------------------------------------------------------------
-conveyor_x = [18, 18, 20, 80, 80, 80, 90, 90, 80, 80, 20, 20, 18]
-conveyor_y = [24, 36, 36, 36, 36, 13, 13, 11, 11, 13, 13, 24, 24]
+if floor == "Pôvodné poschodie":
+    conveyor_x = [18, 18, 20, 80, 80, 80, 90, 90, 80, 80, 20, 20, 18]
+    conveyor_y = [24, 36, 36, 36, 36, 13, 13, 11, 11, 13, 13, 24, 24]
 
 fig.add_trace(
     go.Scatter(
@@ -262,7 +274,7 @@ fig.update_layout(
         showticklabels=False,
         range=[0, 52],
     ),
-    height=720,
+    height=460 if floor == "3. poschodie" else 720,
     margin=dict(l=10, r=10, t=10, b=10),
 )
 
