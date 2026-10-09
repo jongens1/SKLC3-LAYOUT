@@ -12,8 +12,9 @@ class ExcelLayoutTests(unittest.TestCase):
     def test_four_floors_switch_without_exceptions(self):
         app = AppTest.from_file(str(ROOT / 'sklc3.py')).run(timeout=60)
         self.assertEqual(len(sheet_names()), 4)
+        app.radio[0].set_value('Excel debug').run(timeout=60)
         for name in sheet_names():
-            app.radio[0].set_value(name).run(timeout=60)
+            app.selectbox[0].set_value(name).run(timeout=60)
             self.assertEqual(len(app.exception), 0, [e.message for e in app.exception])
             charts = app.get('plotly_chart')
             self.assertEqual(len(charts), 1)
